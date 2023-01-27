@@ -1,0 +1,23 @@
+syntax="proto3";
+
+option go_package = "github.com/taha-ahmadi/golockchain";
+
+
+message Block{
+	Header header = 1;
+	repeated Transaction tranactions = 2; // repeated for arrays or slices
+}
+
+// Headers of the blockchain
+message Header{
+
+	uint32 version = 1; // the version of the block for compatibility
+	uint32 height = 2; // if you have 10 blocks you have height of 10 (or index of the block)
+	bytes prevHash = 3; // previous hash of the block
+	bytes rootHash = 4; // root of the merkle tree of txs
+	uint64 timestamp = 5; 
+}
+
+message Transaction{
+
+}
