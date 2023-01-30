@@ -1,6 +1,21 @@
+// gRPC is a high-performance, open-source framework for building distributed systems. There are several benefits of using gRPC:
+
+// Performance: gRPC uses Protocol Buffers as the data serialization format, which is a compact binary format that is much faster and more efficient than traditional text-based formats like JSON or XML. Additionally, gRPC uses HTTP/2 as the transport protocol, which allows for multiplexing multiple requests over a single connection and reduces latency.
+
+// Cross-Language Compatibility: gRPC provides libraries for multiple programming languages, including Go, Java, Python, and others. This means you can easily write gRPC services in one language and consume them from another language, without having to worry about compatibility issues.
+
+// Strong Type System: gRPC uses Protocol Buffers to define the schema for your data, which provides a strong type system and eliminates the need for manual marshaling and unmarshaling of data.
+
+// Bi-directional Streaming: gRPC supports bi-directional streaming, which allows for real-time communication between the client and the server. This makes it easy to build applications that require real-time communication, such as chat applications, gaming servers, and others.
+
+// Authentication and Security: gRPC supports authentication and encryption out of the box, which makes it easy to secure your applications and ensure that data is transmitted over the network securely.
+
+// Backward Compatibility: gRPC uses Protocol Buffers, which provides backward compatibility. This means that you can add new fields to your data schema without breaking existing clients that consume your services.
+
+// In summary, gRPC is a fast, cross-language, and secure framework for building high-performance distributed systems, making it an ideal choice for building scalable, robust, and reliable applications.
 syntax="proto3";
 
-option go_package = "github.com/taha-ahmadi/golockchain";
+option go_package = "github.com/taha-ahmadi/golockchain/proto";
 
 
 message Block{
@@ -18,6 +33,20 @@ message Header{
 	uint64 timestamp = 5; 
 }
 
-message Transaction{
+message TxInput{
+	bytes prevTxHash = 1;
+	uint32 prevOutIndex = 2;
+	bytes publickey = 3;
+	bytes signuture = 4;
+}
 
+message TxOutput{
+	int64 amount = 1;
+	bytes address = 2;
+}
+
+message Transaction{
+	int32 version = 1; // Later on maybe we change some semantics and we can specify new version and people can know how to decode and encode stuff
+	repeated TxInput  inputs = 2;
+	repeated TxOutput outputs = 3;
 }
