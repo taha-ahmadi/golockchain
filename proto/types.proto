@@ -17,6 +17,18 @@ syntax="proto3";
 
 option go_package = "github.com/taha-ahmadi/golockchain/proto";
 
+// We'll broadcast transactions to all other peers/nodes/servers in the network
+service Node{
+	rpc Handshake(Version) returns (Version);
+	rpc HandleTransaction(Transaction) returns (Ack);
+}
+
+message Version{
+	string version  = 1;
+	uint32 height  = 2;
+}
+
+message Ack{}
 
 message Block{
 	Header header = 1;
@@ -30,14 +42,14 @@ message Header{
 	uint32 height = 2; // if you have 10 blocks you have height of 10 (or index of the block)
 	bytes prevHash = 3; // previous hash of the block
 	bytes rootHash = 4; // root of the merkle tree of txs
-	uint64 timestamp = 5; 
+	int64 timestamp = 5; 
 }
 
 message TxInput{
 	bytes prevTxHash = 1;
 	uint32 prevOutIndex = 2;
-	bytes publickey = 3;
-	bytes signuture = 4;
+	bytes publicKey = 3;
+	bytes signature = 4;
 }
 
 message TxOutput{

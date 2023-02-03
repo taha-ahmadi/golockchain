@@ -2,34 +2,53 @@ package crypto
 
 import (
 	"crypto/ed25519"
+	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGeneratePrivateKey(t *testing.T) {
 	privKey := GeneratePrivateKey()
-	require.Equal(t, len(privKey.Bytes()), ed25519.PrivateKeySize)
+	assert.Equal(t, len(privKey.Bytes()), ed25519.PrivateKeySize)
+
 	pubKey := privKey.Public()
-	require.Equal(t, len(pubKey.Bytes()), ed25519.PublicKeySize)
+	assert.Equal(t, len(pubKey.Bytes()), ed25519.PublicKeySize)
 }
+
+func TestNewPrivateKeyFromString(t *testing.T) {
+	var (
+		seed       = "b3484ef6a36788214e9da7ed4e00005fdb8f60d5684f3df9e61da6fb9c3586f8"
+		privKey    = NewPrivateKeyFromString(seed)
+		addressStr = "1ca8c8d22b00be316e389fdef50f2345c055e3ff"
+	)
+
+	assert.Equal(t, ed25519.PrivateKeySize, len(privKey.Bytes()))
+	address := privKey.Public().Address()
+	assert.Equal(t, addressStr, address.String())
+}
+
 func TestPrivateKeySign(t *testing.T) {
 	privKey := GeneratePrivateKey()
 	pubKey := privKey.Public()
-	msg := []byte("Test message")
+	msg := []byte("foo bar baz")
+
 	sig := privKey.Sign(msg)
+	assert.True(t, sig.Verify(pubKey, msg))
 
-	require.True(t, sig.Verify(pubKey, msg))
-	require.False(t, sig.Verify(pubKey, []byte("f")))
+	// Test with invalid msg
+	assert.False(t, sig.Verify(pubKey, []byte("foo")))
 
+	// Test with invalid pubKey
 	invalidPrivKey := GeneratePrivateKey()
 	invalidPubKey := invalidPrivKey.Public()
-	require.False(t, sig.Verify(invalidPubKey, msg))
+	assert.False(t, sig.Verify(invalidPubKey, msg))
 }
 
 func TestPublicKeyToAddress(t *testing.T) {
 	privKey := GeneratePrivateKey()
-	publicKey := privKey.Public()
-	address := publicKey.Address()
-	require.Equal(t, addressLen, len(address.Bytes()))
+	pubKey := privKey.Public()
+	address := pubKey.Address()
+	assert.Equal(t, addressLen, len(address.Bytes()))
+	fmt.Println(address)
 }
