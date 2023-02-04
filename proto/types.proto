@@ -25,7 +25,8 @@ service Node{
 
 message Version{
 	string version  = 1;
-	uint32 height  = 2;
+	uint32 height  = 2; // If node has not desired height we will ignore it
+	string listenAddr = 3;
 }
 
 message Ack{}

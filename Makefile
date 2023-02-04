@@ -2,7 +2,7 @@ build:
 	@go build -o bin/golackchain
 
 run: build
-	@./bin/main
+	@./bin/golackchain
 
 test:
 	@go run test -v ./...
