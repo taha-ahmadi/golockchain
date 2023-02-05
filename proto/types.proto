@@ -27,6 +27,7 @@ message Version{
 	string version  = 1;
 	uint32 height  = 2; // If node has not desired height we will ignore it
 	string listenAddr = 3;
+	repeated string peerList = 4; // each peer will return its list of peers, so can connect to them.
 }
 
 message Ack{}
