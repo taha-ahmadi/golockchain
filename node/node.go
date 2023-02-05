@@ -34,6 +34,7 @@ func NewNode() *Node {
 	}
 }
 
+// bootstrapNetwork is an implmentaion of peer discovery.
 func (n *Node) bootstrapNetwork(addrs []string) error {
 	for _, addr := range addrs {
 		if !n.canConnectWith(addr) {
@@ -52,6 +53,7 @@ func (n *Node) bootstrapNetwork(addrs []string) error {
 	return nil
 }
 
+// dialRemoteNode tries to connect to peers by make a gRPC client and handshake with them.
 func (n *Node) dialRemoteNode(addr string) (proto.NodeClient, *proto.Version, error) {
 	c, err := makeNodeClient(addr)
 	if err != nil {
@@ -90,7 +92,7 @@ func (n *Node) Start(listenAddr string, bootstrapNodes []string) error {
 	return grpcServer.Serve(ln)
 }
 
-// this is our implementation of Handshake, so if anyone wants to dailing to us, it must run this Handshake
+// this is our implementation of Handshake, so if anyone wants to dailing to us, it must run this Handshake.
 func (n *Node) Handshake(ctx context.Context, v *proto.Version) (*proto.Version, error) {
 	c, err := makeNodeClient(v.ListenAddr)
 	if err != nil {
@@ -116,6 +118,7 @@ func (n *Node) getVersion() *proto.Version {
 	}
 }
 
+// canConnectWith will check if we already have the node that we want to connect to or not.
 func (n *Node) canConnectWith(addr string) bool {
 	if n.listenAddr == addr {
 		return false
@@ -131,6 +134,7 @@ func (n *Node) canConnectWith(addr string) bool {
 	return true
 }
 
+// addPeer validate NodeClient to decide to accept and add it to our peer list or drop it.
 func (n *Node) addPeer(c proto.NodeClient, v *proto.Version) {
 	n.peerLock.Lock()
 	defer n.peerLock.Unlock()
